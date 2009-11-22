@@ -1,3 +1,12 @@
+/*
+Script: LazyLoad
+
+License: MIT-style license.
+
+Copyright: Copyright (c) 2007-2009 [David Walsh](http://davidwalsh.name/).
+
+Author: David Walsh (http://davidwalsh.name)
+*/
 var LazyLoad = new Class({
 
 	Implements: [Options,Events],
@@ -8,7 +17,8 @@ var LazyLoad = new Class({
 		image: 'blank.gif',
 		resetDimensions: true,
 		elements: 'img',
-		container: window
+		container: window,
+		fireScroll: true
 	},
 
 	/* initialize */
@@ -63,5 +73,6 @@ var LazyLoad = new Class({
 	
 		/* listen for scroll */
 		this.container.addEvent('scroll',action);
+		if(this.options.fireScroll) { this.container.fireEvent('scroll'); }
 	}
 });
