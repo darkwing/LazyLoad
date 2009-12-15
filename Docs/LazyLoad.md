@@ -26,6 +26,7 @@ LazyLoad Method: constructor {#LazyLoad:constructor}
 * resetDimensions - (*boolean*, defaults to true)  Should the LazyLoad instance remove the image's "width" and "height" attributes?
 * elements - (*string*, defaults to 'img')  The elements to apply LazyLoad to.
 * container - (*element*, defaults to window)  The container of any images for LazyLoad to be applied to.
+* mode - (*string*, defaults to 'vertical')  The scroll mode ('vertical' or 'horizontal').
 
 ### Returns:
 
