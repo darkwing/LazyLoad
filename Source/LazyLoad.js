@@ -26,8 +26,9 @@ var LazyLoad = new Class({
 		resetDimensions: true,
 		elements: 'img',
 		container: window,
-		fireScroll: true,
-		mode: 'vertical'
+		fireScroll: true, /* keeping for legacy */
+		mode: 'vertical',
+		startPosition: 0
 	},
 
 	/* initialize */
@@ -39,7 +40,7 @@ var LazyLoad = new Class({
 		this.elements = $$(this.options.elements);
 		var axis = (this.options.mode == 'vertical' ? 'y': 'x');
 		this.containerDimension = this.container.getSize()[axis];
-		this.start = 0;
+		this.startPosition = 0;
 
 		/* find elements remember and hold on to */
 		this.elements = this.elements.filter(function(el) {
@@ -56,22 +57,19 @@ var LazyLoad = new Class({
 		/* create the action function */
 		var action = function() {
 			var cpos = this.container.getScroll()[axis];
-			if(cpos > this.start) {
+			if(cpos > this.startPosition) {
 				this.elements = this.elements.filter(function(el) {
-					if((this.container.getScroll()[axis] + this.options.range + this.containerDimension) >= el.getPosition(this.container)[axis]) {
+					if((cpos + this.options.range + this.containerDimension) >= el.getPosition(this.container)[axis]) {
 						if(el.retrieve('oSRC')) { el.set('src',el.retrieve('oSRC')); }
 						if(this.options.resetDimensions) {
-							el.set({
-								width: el.retrieve('oWidth'),
-								height: el.retrieve('oHeight') 
-							});
+							el.set({ width: el.retrieve('oWidth'), height: el.retrieve('oHeight') });
 						}
 						this.fireEvent('load',[el]);
 						return false;
 					}
 					return true;
 				},this);
-				this.start = cpos;
+				this.startPosition = cpos;
 			}
 			this.fireEvent('scroll');
 			/* remove this event IF no elements */
@@ -83,6 +81,6 @@ var LazyLoad = new Class({
 	
 		/* listen for scroll */
 		this.container.addEvent('scroll',action);
-		if(this.options.fireScroll) { this.container.fireEvent('scroll'); }
+		if(this.options.fireScroll) { action(); }
 	}
 });
