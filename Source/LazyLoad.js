@@ -25,7 +25,7 @@ var LazyLoad = new Class({
 		image: 'blank.gif',
 		resetDimensions: true,
 		elements: 'img',
-		container: window,
+		container: null,
 		fireScroll: true, /* keeping for legacy */
 		mode: 'vertical',
 		startPosition: 0
@@ -36,7 +36,7 @@ var LazyLoad = new Class({
 	
 		/* vars */
 		this.setOptions(options);
-		this.container = document.id(this.options.container);
+		this.container = document.id(this.options.container || null);
 		this.elements = $$(this.options.elements);
 		var axis = (this.options.mode == 'vertical' ? 'y': 'x');
 		this.containerDimension = this.container.getSize()[axis];
