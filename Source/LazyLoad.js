@@ -25,7 +25,7 @@ var LazyLoad = new Class({
 		image: 'blank.gif',
 		resetDimensions: true,
 		elements: 'img',
-		container: null,
+		container: window,
 		fireScroll: true, /* keeping for legacy */
 		mode: 'vertical',
 		startPosition: 0
@@ -33,19 +33,22 @@ var LazyLoad = new Class({
 
 	/* initialize */
 	initialize: function(options) {
-	
+
 		/* vars */
 		this.setOptions(options);
-		this.container = document.id(this.options.container || null);
+		this.container = document.id(this.options.container);
 		this.elements = $$(this.options.elements);
 		var axis = (this.options.mode == 'vertical' ? 'y': 'x');
 		this.containerDimension = this.container.getSize()[axis];
 		this.startPosition = 0;
 
+		var offset = (this.container != window && this.container != document.body ? this.container : "");
+
 		/* find elements remember and hold on to */
 		this.elements = this.elements.filter(function(el) {
+			var elPos = el.getPosition(offset)[axis];
 			/* reset image src IF the image is below the fold and range */
-			if(el.getPosition(this.container)[axis] > this.containerDimension + this.options.range) {
+			if(elPos > this.containerDimension + this.options.range) {
 				el.store('oSRC',el.get('src')).set('src',this.options.image);
 				if(this.options.resetDimensions) {
 					el.store('oWidth',el.get('width')).store('oHeight',el.get('height')).set({'width':'','height':''});
@@ -53,13 +56,13 @@ var LazyLoad = new Class({
 				return true;
 			}
 		},this);
-	
+
 		/* create the action function */
 		var action = function() {
 			var cpos = this.container.getScroll()[axis];
 			if(cpos > this.startPosition) {
 				this.elements = this.elements.filter(function(el) {
-					if((cpos + this.options.range + this.containerDimension) >= el.getPosition(this.container)[axis]) {
+					if((cpos + this.options.range + this.containerDimension) >= el.getPosition(offset)[axis]) {
 						if(el.retrieve('oSRC')) { el.set('src',el.retrieve('oSRC')); }
 						if(this.options.resetDimensions) {
 							el.set({ width: el.retrieve('oWidth'), height: el.retrieve('oHeight') });
@@ -78,9 +81,9 @@ var LazyLoad = new Class({
 				this.fireEvent('complete');
 			}
 		}.bind(this);
-	
+
 		/* listen for scroll */
-		this.container.addEvent('scroll',action);
+		window.addEvent('scroll',action);
 		if(this.options.fireScroll) { action(); }
 	}
 });
