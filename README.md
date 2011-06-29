@@ -15,9 +15,15 @@ LazyLoad should be initialized during the DOMReady event.  There are no required
 	/* LazyLoad instance */
 	var lazyloader = new LazyLoad({
 		range: 200,
-		image: 'Assets/blank.gif',
+		realSrcAttribute: "data-src",
+		useFade: true,
 		elements: 'img'
 	});
+	
+	#HTML
+	<img src="http://davidwalsh.name/dw-content/blank.gif" data-src="http://davidwalsh.name/dw-content/mexico-2009/small/102_1152.jpg" />
+	<!-- or -->
+	<img data-src="http://davidwalsh.name/dw-content/mexico-2009/small/102_1152.jpg" />
 	
 
 For specific usage and options, please read the documentation or visit [http://davidwalsh.name/js/lazyload](http://davidwalsh.name/js/lazyLoad)
