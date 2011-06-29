@@ -9,7 +9,7 @@ license:
   - MIT-style license
 
 requires:
-  core/1.2.1:   '*'
+  core/1.2.1:   "*"
 
 provides:
   - LazyLoad
@@ -22,68 +22,97 @@ var LazyLoad = new Class({
 	/* additional options */
 	options: {
 		range: 200,
-		image: 'blank.gif',
-		resetDimensions: true,
-		elements: 'img',
+		elements: "img",
 		container: window,
-		fireScroll: true, /* keeping for legacy */
-		mode: 'vertical',
-		startPosition: 0
+		mode: "vertical",
+		realSrcAttribute: "data-src",
+		useFade: true
 	},
 
 	/* initialize */
 	initialize: function(options) {
-
-		/* vars */
+		
+		// Set the class options
 		this.setOptions(options);
+		
+		// Elementize items passed in
 		this.container = document.id(this.options.container);
 		this.elements = $$(this.options.elements);
-		var axis = (this.options.mode == 'vertical' ? 'y': 'x');
-		this.containerDimension = this.container.getSize()[axis];
-		this.startPosition = 0;
-
+		
+		// Set a variable for the "highest" value this has been
+		this.largestPosition = 0;
+		
+		// Figure out which axis to check out
+		var axis = (this.options.mode == "vertical" ? "y": "x");
+		
+		// Calculate the offset
 		var offset = (this.container != window && this.container != document.body ? this.container : "");
 
-		/* find elements remember and hold on to */
+		// Find elements remember and hold on to
 		this.elements = this.elements.filter(function(el) {
+			// Make opacity 0 if fadeIn should be done
+			if(this.options.useFade) el.setStyle("opacity",0);
+			// Get the image position
 			var elPos = el.getPosition(offset)[axis];
-			/* reset image src IF the image is below the fold and range */
-			if(elPos > this.containerDimension + this.options.range) {
-				el.store('oSRC',el.get('src')).set('src',this.options.image);
-				if(this.options.resetDimensions) {
-					el.store('oWidth',el.get('width')).store('oHeight',el.get('height')).set({'width':'','height':''});
-				}
-				return true;
+			// If the element position is within range, load it
+			if(elPos < this.container.getSize()[axis] + this.options.range) {
+				this.loadImage(el);
+				return false;
 			}
+			return true;
 		},this);
-
-		/* create the action function */
-		var action = function() {
+		
+		// Create the action function that will run on each scroll until all images are loaded
+		var action = function(e) {
+			
+			// Get the current position
 			var cpos = this.container.getScroll()[axis];
-			if(cpos > this.startPosition) {
+			
+			// If the current position is higher than the last highest
+			if(cpos > this.largestPosition) {
+				
+				// Filter elements again
 				this.elements = this.elements.filter(function(el) {
-					if((cpos + this.options.range + this.containerDimension) >= el.getPosition(offset)[axis]) {
-						if(el.retrieve('oSRC')) { el.set('src',el.retrieve('oSRC')); }
-						if(this.options.resetDimensions) {
-							el.set({ width: el.retrieve('oWidth'), height: el.retrieve('oHeight') });
-						}
-						this.fireEvent('load',[el]);
+					
+					// If the element is within range...
+					if((cpos + this.options.range + this.container.getSize()[axis]) >= el.getPosition(offset)[axis]) {
+						
+						// Load the image!
+						this.loadImage(el);
 						return false;
 					}
 					return true;
+					
 				},this);
-				this.startPosition = cpos;
+				
+				// Update the "highest" position
+				this.largestPosition = cpos;
 			}
-			this.fireEvent('scroll');
-			/* remove this event IF no elements */
+			
+			// relay the class" scroll event
+			this.fireEvent("scroll");
+			
+			// If there are no elements left, remove the action event and fire complete
 			if(!this.elements.length) {
-				this.container.removeEvent('scroll',action);
-				this.fireEvent('complete');
+				this.container.removeEvent("scroll", action);
+				this.fireEvent("complete");
 			}
+			
 		}.bind(this);
-
-		/* listen for scroll */
-		window.addEvent('scroll',action);
-		if(this.options.fireScroll) { action(); }
+		
+		// Add scroll listener
+		this.container.addEvent("scroll", action);
+	},
+	loadImage: function(image) {
+		// Set load event for fadeIn
+		if(this.options.useFade) {
+			image.addEvent("load", function(){
+				image.fade(1);
+			});
+		}
+		// Set the SRC
+		image.set("src", image.get(this.options.realSrcAttribute));
+		// Fire the image load event
+		this.fireEvent("load", [image]);
 	}
 });
