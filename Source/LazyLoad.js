@@ -37,7 +37,7 @@ var LazyLoad = new Class({
 		
 		// Elementize items passed in
 		this.container = document.id(this.options.container);
-		this.elements = $$(this.options.elements);
+		this.elements = this.container.getElements(this.options.elements);
 		
 		// Set a variable for the "highest" value this has been
 		this.largestPosition = 0;
