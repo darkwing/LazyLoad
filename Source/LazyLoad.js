@@ -23,7 +23,7 @@ var LazyLoad = new Class({
 	options: {
 		range: 200,
 		elements: "img",
-		container: document,
+		container: window,
 		mode: "vertical",
 		realSrcAttribute: "data-src",
 		useFade: true
@@ -37,7 +37,7 @@ var LazyLoad = new Class({
 		
 		// Elementize items passed in
 		this.container = document.id(this.options.container);
-		this.elements = this.container.getElements(this.options.elements);
+		this.elements = document.id(this.container == window ? document.body : this.container).getElements(this.options.elements);
 		
 		// Set a variable for the "highest" value this has been
 		this.largestPosition = 0;
@@ -46,12 +46,12 @@ var LazyLoad = new Class({
 		var axis = (this.options.mode == "vertical" ? "y": "x");
 		
 		// Calculate the offset
-		var offset = (this.container != window && this.container != document.body ? this.container : "");
+		var offset = (this.container != document.body && this.container != document.body ? this.container : "");
 
 		// Find elements remember and hold on to
 		this.elements = this.elements.filter(function(el) {
 			// Make opacity 0 if fadeIn should be done
-			if(this.options.useFade) el.setStyle("opacity",0);
+			if(this.options.useFade) el.setStyle("opacity", 0);
 			// Get the image position
 			var elPos = el.getPosition(offset)[axis];
 			// If the element position is within range, load it

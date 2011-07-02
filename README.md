@@ -17,7 +17,8 @@ LazyLoad should be initialized during the DOMReady event.  There are no required
 		range: 200,
 		realSrcAttribute: "data-src",
 		useFade: true,
-		elements: 'img'
+		elements: 'img',
+		container: window
 	});
 	
 	#HTML
