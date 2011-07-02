@@ -23,7 +23,7 @@ var LazyLoad = new Class({
 	options: {
 		range: 200,
 		elements: "img",
-		container: window,
+		container: document,
 		mode: "vertical",
 		realSrcAttribute: "data-src",
 		useFade: true
