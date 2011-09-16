@@ -46,7 +46,7 @@ var LazyLoad = new Class({
 		var axis = (this.options.mode == "vertical" ? "y": "x");
 		
 		// Calculate the offset
-		var offset = (this.container != document.body && this.container != document.body ? this.container : "");
+		var offset = (this.container != document.body ? this.container : "");
 
 		// Find elements remember and hold on to
 		this.elements = this.elements.filter(function(el) {
