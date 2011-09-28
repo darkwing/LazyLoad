@@ -26,7 +26,8 @@ var LazyLoad = new Class({
 		container: window,
 		mode: "vertical",
 		realSrcAttribute: "data-src",
-		useFade: true
+		useFade: true,
+		useScrollLoad: true
 	},
 
 	/* initialize */
@@ -39,9 +40,25 @@ var LazyLoad = new Class({
 		this.container = document.id(this.options.container);
 		this.elements = document.id(this.container == window ? document.body : this.container).getElements(this.options.elements);
 		
-		// Set a variable for the "highest" value this has been
-		this.largestPosition = 0;
-		
+		if(this.options.useScrollLoad) {
+			// Set a variable for the "highest" value this has been
+			this.largestPosition = 0;
+			
+			this.scrollLoad();
+		} else {
+			if(this.options.useFade) {
+				this.elements.each(function(el) {
+					el.setStyle('opacity', 0);
+				});
+			}			
+		}
+	},
+	manualLoad: function() {
+		this.elements.each(function(img) {
+			this.loadImage(img);
+		}, this);
+	},
+	scrollLoad: function() {
 		// Figure out which axis to check out
 		var axis = (this.options.mode == "vertical" ? "y": "x");
 		
@@ -101,7 +118,7 @@ var LazyLoad = new Class({
 		}.bind(this);
 		
 		// Add scroll listener
-		this.container.addEvent("scroll", action);
+		this.container.addEvent("scroll", action);		
 	},
 	loadImage: function(image) {
 		// Set load event for fadeIn
