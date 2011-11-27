@@ -11,7 +11,7 @@ How to Use
 
 LazyLoad should be initialized during the DOMReady event.  There are no required arguments -- only options.
 
-	#JS
+	# JS With Load Trigger on Scroll
 	/* LazyLoad instance */
 	var lazyloader = new LazyLoad({
 		range: 200,
@@ -20,6 +20,15 @@ LazyLoad should be initialized during the DOMReady event.  There are no required
 		elements: 'img',
 		container: window
 	});
+	
+	# JS With Manual Load Trigger
+	var lazyLoader = new LazyLoad({
+		container: window,
+		elements: 'img',
+		useScrollLoad: false
+	});
+	
+	lazyLoader.manualLoad()
 	
 	#HTML
 	<img src="http://davidwalsh.name/dw-content/blank.gif" data-src="http://davidwalsh.name/dw-content/mexico-2009/small/102_1152.jpg" />
