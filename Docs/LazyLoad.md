@@ -27,6 +27,7 @@ LazyLoad Method: constructor {#LazyLoad:constructor}
 * elements - (*string*, defaults to 'img')  The elements to apply LazyLoad to.
 * container - (*element*, defaults to window)  The container of any images for LazyLoad to be applied to.
 * mode - (*string*, defaults to 'vertical')  The scroll mode ('vertical' or 'horizontal').
+* useFade - (*boolean*, defaults to true)  Notes if images should fade in when loaded
 
 ### Returns:
 
