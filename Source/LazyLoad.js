@@ -104,15 +104,19 @@ var LazyLoad = new Class({
 		this.container.addEvent("scroll", action);
 	},
 	loadImage: function(image) {
-		// Set load event for fadeIn
-		if(this.options.useFade) {
-			image.addEvent("load", function(){
-				image.fade(1);
-			});
+		var realSrc = image.get(this.options.realSrcAttribute);
+		
+		if (realSrc !== null) {		
+			// Set load event for fadeIn
+			if(this.options.useFade) {
+				image.addEvent("load", function(){
+					image.fade(1);
+				});
+			}
+			
+			image.set("src", realSrc);
+			// Fire the image load event
+			this.fireEvent("load", [image]);
 		}
-		// Set the SRC
-		image.set("src", image.get(this.options.realSrcAttribute));
-		// Fire the image load event
-		this.fireEvent("load", [image]);
 	}
 });
