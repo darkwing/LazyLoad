@@ -22,7 +22,7 @@ var LazyLoad = new Class({
 	/* additional options */
 	options: {
 		range: 200,
-		elements: "img",
+		elements: "img[data-src]",
 		container: window,
 		mode: "vertical",
 		realSrcAttribute: "data-src",
